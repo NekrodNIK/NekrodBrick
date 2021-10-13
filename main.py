@@ -4,7 +4,7 @@ from PIL import Image, ImageEnhance
 from PIL.ImageQt import ImageQt
 
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QApplication
 from interface.window import Ui_MainWindow
 
 
@@ -30,12 +30,15 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def set_image(self, image: Image.Image):
         image = image.resize(
-            [self.height(), self.height()], Image.ADAPTIVE
+            [self.ImageView.height(), self.ImageView.height()], Image.ADAPTIVE
         )
 
         imgQt = ImageQt(image.convert("RGBA"))
         pixmap = QtGui.QPixmap(QtGui.QImage(imgQt))
-        self.ImageView.setPixmap(pixmap)
+
+        scene = QGraphicsScene(self)
+        scene.addPixmap(pixmap)
+        self.ImageView.setScene(scene)
 
 
 if __name__ == "__main__":
