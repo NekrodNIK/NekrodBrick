@@ -1,13 +1,13 @@
 from PIL import Image, ImageEnhance
 
-img = Image.open("./example_image/road.jpg")
+img = Image.open("./example_image/cat.jpg")
 
-imgSmall = img.resize((64, 64), resample=Image.BILINEAR)
+img = img.convert("P", palette=Image.ADAPTIVE, colors=5).convert('L')
 
-result = imgSmall.resize(img.size, resample=Image.NEAREST)
+imgSmall = img.resize((64, 64), resample=Image.ADAPTIVE)
 
-result = ImageEnhance.Contrast(result).enhance(1.5)
+img = imgSmall.resize(img.size, resample=Image.NEAREST)
 
-result = result.convert("L")
+img = ImageEnhance.Contrast(img).enhance(3)
 
-result.save("./example_image/road-pixelize.jpg")
+img.save("./example_image/output.png")
