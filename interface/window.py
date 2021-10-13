@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.ImageView = QtWidgets.QGraphicsView(self.centralwidget)
+        self.ImageView = QtWidgets.QLabel(self.centralwidget)
         self.ImageView.setObjectName("ImageView")
         self.gridLayout.addWidget(self.ImageView, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -30,3 +30,4 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.ImageView.setText(_translate("MainWindow", "0"))
