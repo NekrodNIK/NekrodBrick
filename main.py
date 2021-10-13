@@ -1,13 +1,16 @@
-from PIL import Image, ImageEnhance
+import sys
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from interface.window import Ui_MainWindow
 
-img = Image.open("./example_image/cat.jpg")
 
-img = img.convert("P", palette=Image.ADAPTIVE, colors=5).convert('L')
+class MainWindow(Ui_MainWindow, QMainWindow):
+    def __init__(self):
+        super().__init__()
+        
+        self.setupUi(self)
 
-imgSmall = img.resize((64, 64), resample=Image.ADAPTIVE)
-
-img = imgSmall.resize(img.size, resample=Image.NEAREST)
-
-img = ImageEnhance.Contrast(img).enhance(3)
-
-img.save("./example_image/output.png")
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
