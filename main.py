@@ -16,7 +16,9 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
         img = Image.open("./example_image/cat.jpg")
 
-        img = img.convert("P", palette=Image.ADAPTIVE, colors=5).convert('RGBA')
+        img = img.convert("P", palette=Image.ADAPTIVE,
+                          colors=5).convert('RGBA')
+
         img = ImageEnhance.Contrast(img).enhance(3)
 
         img = (img.resize([64, 64], resample=Image.ADAPTIVE)).resize(
@@ -29,8 +31,9 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         )
 
     def set_image(self, image: Image.Image):
+        height = self.ImageView.height()-10
         image = image.resize(
-            [self.ImageView.height(), self.ImageView.height()], Image.ADAPTIVE
+            [height, height], Image.ADAPTIVE
         )
 
         imgQt = ImageQt(image.convert("RGBA"))
