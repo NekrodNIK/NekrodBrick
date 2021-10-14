@@ -11,6 +11,15 @@ from interface.window import Ui_MainWindow
 
 
 class MainWindow(Ui_MainWindow, QMainWindow):
+    class IMAGE_SETTINGS:
+        isChangedSettings: bool
+
+        size: tuple[int, int]
+        filterBlackWhite: bool
+        invertColor: bool
+        contrastValue: float
+        colorCount: int
+
     def __init__(self):
         super().__init__()
 
@@ -21,14 +30,62 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         update_timer.timeout.connect(self.update_image)
         update_timer.start()
 
-        self.OpenFileButton.clicked.connect(self.open_file)
+        self.IMAGE_SETTINGS.isChangedSettings = False
+        self.IMAGE_SETTINGS.size = [self.WidthAndHeightSpinBox.value(),
+                                    self.WidthAndHeightSpinBox.value()]
+        self.IMAGE_SETTINGS.filterBlackWhite = (
+                self.BlackWhiteModeButton.isChecked()
+            )
+        self.IMAGE_SETTINGS.invertColor = self.InvertedColorButton.isCheckable()
+        self.IMAGE_SETTINGS.contrastValue = self.ContrastValueSpinBox.value()
+        self.IMAGE_SETTINGS.colorCount = self.ColorCountSpinBox.value()
 
-        self.isChangedSettings = False
+        self.OpenFileButton.clicked.connect(self.open_file)
+        self.WidthAndHeightSpinBox.valueChanged.connect(
+            self.change_width_and_height_value
+        )
+        self.BlackWhiteModeButton.stateChanged.connect(
+            self.change_mode_filter_black_white
+        )
+        self.InvertedColorButton.stateChanged.connect(
+            self.change_mode_inverted_color
+        )
+        self.ContrastValueSpinBox.valueChanged.connect(
+            self.change_contrast_value
+        )
+        self.ColorCountSpinBox.valueChanged.connect(
+            self.change_contrast_value
+        )
 
     def open_file(self):
         file_path = QFileDialog.getOpenFileName(self, "Открыть файл", "./")[0]
         self.image_raw = Image.open(file_path)
-        self.isChangedSettings = True
+        self.IMAGE_SETTINGS.isChangedSettings = True
+
+    def change_width_and_height_value(self):
+        self.IMAGE_SETTINGS.size = [
+                self.WidthAndHeightSpinBox.value(),
+                self.WidthAndHeightSpinBox.value()
+            ]
+        self.IMAGE_SETTINGS.isChangedSettings = True
+
+    def change_mode_filter_black_white(self):
+        self.IMAGE_SETTINGS.filterBlackWhite = (
+                self.BlackWhiteModeButton.isChecked()
+            )
+        self.IMAGE_SETTINGS.isChangedSettings = True
+
+    def change_mode_inverted_color(self):
+        self.IMAGE_SETTINGS.invertColor = self.InvertedColorButton.isChecked()
+        self.IMAGE_SETTINGS.isChangedSettings = True
+
+    def change_contrast_value(self):
+        self.IMAGE_SETTINGS.contrastValue = self.ContrastValueSpinBox.value()
+        self.IMAGE_SETTINGS.isChangedSettings = True
+
+    def change_color_count(self):
+        self.IMAGE_SETTINGS.colorCount = self.ColorCountSpinBox.value()
+        self.IMAGE_SETTINGS.isChangedSettings = True
 
     def set_image(self, image: Image.Image):
         height = self.ImageView.height()-10
@@ -44,10 +101,10 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.ImageView.setScene(scene)
 
     def update_image(self):
-        if self.isChangedSettings:
+        if self.IMAGE_SETTINGS.isChangedSettings:
             print(1)
 
-            self.isChangedSettings = False
+            self.IMAGE_SETTINGS.isChangedSettings = False
 
 
 if __name__ == "__main__":
