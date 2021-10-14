@@ -36,7 +36,9 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.IMAGE_SETTINGS.filterBlackWhite = (
                 self.BlackWhiteModeButton.isChecked()
             )
-        self.IMAGE_SETTINGS.invertColor = self.InvertedColorButton.isCheckable()
+        self.IMAGE_SETTINGS.invertColor = (
+            self.InvertedColorButton.isCheckable()
+        )
         self.IMAGE_SETTINGS.contrastValue = self.ContrastValueSpinBox.value()
         self.IMAGE_SETTINGS.colorCount = self.ColorCountSpinBox.value()
 
