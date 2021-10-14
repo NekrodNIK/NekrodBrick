@@ -1,6 +1,6 @@
 import sys
 
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageOps
 from PIL.ImageQt import ImageQt
 
 from PyQt5 import QtCore, QtGui
@@ -26,7 +26,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
 
         update_timer = QtCore.QTimer(self)
-        update_timer.setInterval(100)
+        update_timer.setInterval(10)
         update_timer.timeout.connect(self.update_image)
         update_timer.start()
 
@@ -37,7 +37,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
                 self.BlackWhiteModeButton.isChecked()
             )
         self.IMAGE_SETTINGS.invertColor = (
-            self.InvertedColorButton.isCheckable()
+            self.InvertedColorButton.isChecked()
         )
         self.IMAGE_SETTINGS.contrastValue = self.ContrastValueSpinBox.value()
         self.IMAGE_SETTINGS.colorCount = self.ColorCountSpinBox.value()
@@ -56,7 +56,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
             self.change_contrast_value
         )
         self.ColorCountSpinBox.valueChanged.connect(
-            self.change_contrast_value
+            self.change_color_count
         )
 
     def open_file(self):
@@ -104,7 +104,31 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def update_image(self):
         if self.IMAGE_SETTINGS.isChangedSettings:
-            print(1)
+            img_view = self.image_raw.convert(
+                "P",
+                palette=Image.ADAPTIVE,
+                colors=self.IMAGE_SETTINGS.colorCount
+            ).convert("RGB")
+
+            img_view = ImageEnhance.Contrast(img_view).enhance(
+                self.IMAGE_SETTINGS.contrastValue
+            )
+
+            if self.IMAGE_SETTINGS.invertColor:
+                img_view = ImageOps.invert(img_view)
+
+            if self.IMAGE_SETTINGS.filterBlackWhite:
+                img_view = img_view.convert("L")
+
+            img_view = img_view.resize(
+                self.IMAGE_SETTINGS.size,
+                resample=Image.ADAPTIVE
+            ).resize(
+                img_view.size,
+                resample=Image.NEAREST
+            )
+
+            self.set_image(img_view)
 
             self.IMAGE_SETTINGS.isChangedSettings = False
 

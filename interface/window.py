@@ -110,6 +110,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.label_2)
         self.ColorCountSpinBox = QtWidgets.QSpinBox(self.SettingsWidjet)
         self.ColorCountSpinBox.setMinimumSize(QtCore.QSize(55, 30))
+        self.ColorCountSpinBox.setMinimum(1)
         self.ColorCountSpinBox.setMaximum(256)
         self.ColorCountSpinBox.setProperty("value", 5)
         self.ColorCountSpinBox.setObjectName("ColorCountSpinBox")
