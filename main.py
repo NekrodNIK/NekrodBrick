@@ -3,8 +3,10 @@ import sys
 from PIL import Image, ImageEnhance
 from PIL.ImageQt import ImageQt
 
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QGraphicsScene, QMainWindow, QApplication
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import (QFileDialog, QGraphicsScene,
+                             QMainWindow, QApplication)
+
 from interface.window import Ui_MainWindow
 
 
@@ -14,21 +16,19 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
         self.setupUi(self)
 
-        img = Image.open("./example_image/cat.jpg")
+        update_timer = QtCore.QTimer(self)
+        update_timer.setInterval(100)
+        update_timer.timeout.connect(self.update_image)
+        update_timer.start()
 
-        img = img.convert("P", palette=Image.ADAPTIVE,
-                          colors=5).convert('RGBA')
+        self.OpenFileButton.clicked.connect(self.open_file)
 
-        img = ImageEnhance.Contrast(img).enhance(3)
+        self.isChangedSettings = False
 
-        img = (img.resize([64, 64], resample=Image.ADAPTIVE)).resize(
-                img.size,
-                Image.NEAREST
-            )
-
-        self.set_image(
-            img
-        )
+    def open_file(self):
+        file_path = QFileDialog.getOpenFileName(self, "Открыть файл", "./")[0]
+        self.image_raw = Image.open(file_path)
+        self.isChangedSettings = True
 
     def set_image(self, image: Image.Image):
         height = self.ImageView.height()-10
@@ -42,6 +42,12 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         scene = QGraphicsScene(self)
         scene.addPixmap(pixmap)
         self.ImageView.setScene(scene)
+
+    def update_image(self):
+        if self.isChangedSettings:
+            print(1)
+
+            self.isChangedSettings = False
 
 
 if __name__ == "__main__":
