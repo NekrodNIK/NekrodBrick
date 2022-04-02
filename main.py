@@ -2,12 +2,12 @@ import sys
 
 from PIL import Image, ImageEnhance, ImageOps
 from PIL.ImageQt import ImageQt
-
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (QFileDialog, QGraphicsScene,
-                             QMainWindow, QApplication)
+                               QMainWindow, QApplication)
 
 from modules.interface.window import Ui_MainWindow
+from modules.image_manipulation import gen_pixelize_image
 
 
 class MainWindow(Ui_MainWindow, QMainWindow):
@@ -34,8 +34,8 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.IMAGE_SETTINGS.size = [self.WidthAndHeightSpinBox.value(),
                                     self.WidthAndHeightSpinBox.value()]
         self.IMAGE_SETTINGS.filterBlackWhite = (
-                self.BlackWhiteModeButton.isChecked()
-            )
+            self.BlackWhiteModeButton.isChecked()
+        )
         self.IMAGE_SETTINGS.invertColor = (
             self.InvertedColorButton.isChecked()
         )
@@ -66,15 +66,15 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def change_width_and_height_value(self):
         self.IMAGE_SETTINGS.size = [
-                self.WidthAndHeightSpinBox.value(),
-                self.WidthAndHeightSpinBox.value()
-            ]
+            self.WidthAndHeightSpinBox.value(),
+            self.WidthAndHeightSpinBox.value()
+        ]
         self.IMAGE_SETTINGS.isChangedSettings = True
 
     def change_mode_filter_black_white(self):
         self.IMAGE_SETTINGS.filterBlackWhite = (
-                self.BlackWhiteModeButton.isChecked()
-            )
+            self.BlackWhiteModeButton.isChecked()
+        )
         self.IMAGE_SETTINGS.isChangedSettings = True
 
     def change_mode_inverted_color(self):
@@ -90,7 +90,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.IMAGE_SETTINGS.isChangedSettings = True
 
     def set_image(self, image: Image.Image):
-        height = self.ImageView.height()-10
+        height = self.ImageView.height() - 10
         image = image.resize(
             [height, height], Image.ADAPTIVE
         )
@@ -104,31 +104,12 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def update_image(self):
         if self.IMAGE_SETTINGS.isChangedSettings:
-            img_view = self.image_raw.convert(
-                "P",
-                palette=Image.ADAPTIVE,
-                colors=self.IMAGE_SETTINGS.colorCount
-            ).convert("RGB")
-
-            img_view = ImageEnhance.Contrast(img_view).enhance(
-                self.IMAGE_SETTINGS.contrastValue
-            )
-
-            if self.IMAGE_SETTINGS.invertColor:
-                img_view = ImageOps.invert(img_view)
-
-            if self.IMAGE_SETTINGS.filterBlackWhite:
-                img_view = img_view.convert("L")
-
-            img_view = img_view.resize(
-                self.IMAGE_SETTINGS.size,
-                resample=Image.ADAPTIVE
-            ).resize(
-                img_view.size,
-                resample=Image.NEAREST
-            )
-
-            self.set_image(img_view)
+            self.set_image(gen_pixelize_image(image=self.image_raw,
+                                              number_pixel=self.IMAGE_SETTINGS.size[0],
+                                              color_count=self.IMAGE_SETTINGS.colorCount,
+                                              contrast_value=self.IMAGE_SETTINGS.contrastValue,
+                                              invert_colors=self.IMAGE_SETTINGS.invertColor,
+                                              monochrome=self.IMAGE_SETTINGS.filterBlackWhite))
 
             self.IMAGE_SETTINGS.isChangedSettings = False
 
