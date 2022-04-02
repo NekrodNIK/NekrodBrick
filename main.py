@@ -3,11 +3,11 @@ import sys
 from PIL import Image, ImageEnhance, ImageOps
 from PIL.ImageQt import ImageQt
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QFileDialog, QGraphicsScene,
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import (QFileDialog, QGraphicsScene,
                              QMainWindow, QApplication)
 
-from interface.window import Ui_MainWindow
+from modules.interface.window import Ui_MainWindow
 
 
 class MainWindow(Ui_MainWindow, QMainWindow):

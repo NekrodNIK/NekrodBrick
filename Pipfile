@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 pillow = "*"
 flake8 = "*"
-pyqt5 = "*"
+pyside6 = "*"
 
 [dev-packages]
 
